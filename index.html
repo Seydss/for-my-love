@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20%;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        #timer, #hiddenLink, #presentImage, #message, #preMessage {
+            display: none;
+            margin-top: 20px;
+        }
+        #presentImage {
+            cursor: pointer;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Something Special Awaits...</h1>
+    <p id="timer">The surprise will unlock soon!</p>
+    <p id="preMessage"></p>  <!-- Rotating message will appear here -->
+    <img id="presentImage" src="https://via.placeholder.com/150x150.png?text=Gift" alt="Gift Image" />
+    <p id="message">Click the present to reveal the surprise!</p>
+    <a id="hiddenLink" href="https://youtu.be/qbLp7ImcuEI" target="_blank">Click here to view</a>
+
+    <script>
+        // Set the unlock date and time in Paris time
+        const unlockDate = new Date("2024-11-19T00:00:00+01:00").getTime();
+
+        // Messages that will rotate
+        const messages = [
+            "I will always remember our time at Deloitte and how your presence helped me so much.",
+            "From Tunisia to Paris, those memories are precious to me. You helped me grow.",
+            "Despite the distance and the challenges, I know we'll make it work.",
+            "You mean so much to me, and this is just the beginning of our journey together."
+        ];
+
+        const timerElement = document.getElementById("timer");
+        const presentImage = document.getElementById("presentImage");
+        const messageElement = document.getElementById("message");
+        const hiddenLink = document.getElementById("hiddenLink");
+        const preMessageElement = document.getElementById("preMessage");
+
+        let messageIndex = 0;
+
+        // Function to rotate messages every 4 seconds
+        const rotateMessages = () => {
+            preMessageElement.textContent = messages[messageIndex];
+            preMessageElement.style.display = "block"; // Show rotating message
+            messageIndex = (messageIndex + 1) % messages.length; // Cycle through the messages
+        };
+
+        // Rotate messages immediately and then every 4 seconds
+        rotateMessages();
+        setInterval(rotateMessages, 4000);
+
+        // Display the countdown (second by second)
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const timeLeft = unlockDate - now;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                timerElement.style.display = "none";  // Hide timer
+                preMessageElement.style.display = "none";  // Hide rotating messages
+                presentImage.style.display = "block"; // Show present image and "Click Me" message
+                messageElement.style.display = "block"; // Show "Click to reveal" message
+            } else {
+                // Calculate remaining time
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                // Update the countdown text
+                timerElement.textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds left!`;
+                timerElement.style.display = "block"; // Show timer
+            }
+        }, 1000); // Update every second
+
+        // When the present image is clicked, reveal the link
+        presentImage.addEventListener('click', () => {
+            messageElement.style.display = "none";
+            hiddenLink.style.display = "block";
+        });
+    </script>
+</body>
+</html>
